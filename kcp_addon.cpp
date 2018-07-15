@@ -138,10 +138,14 @@ napi_value kcp_recv(napi_env env, napi_callback_info cbinfo)
     napi_get_cb_info(env, cbinfo, &argc, argv, &this_arg, NULL);
     PKcp pkcp;
     napi_get_value_external(env, argv[0], (void **)&pkcp);
-    char buff[1024];
-    int size = ikcp_recv(pkcp->kcp, buff, 1024);
-    if (size > 0) {
-        napi_create_buffer_copy(env, size, buff, NULL, &ret);
+    char buff[4096];
+    napi_create_array(env, &ret);
+    int i = 0;
+    int size = 0;
+    while ((size = ikcp_recv(pkcp->kcp, buff, 1024)) > 0) {
+        napi_value recv_buff;
+        napi_create_buffer_copy(env, size, buff, NULL, &recv_buff);
+        napi_set_element(env, ret, i++, recv_buff);
     }
     return ret;
 }

@@ -18,10 +18,12 @@ sock.on("message", (message, rinfo) => {
 
 setInterval(() => {
     let recvBuff = kcp.kcp_recv(kcpsession);
-    if (recvBuff) {
-        let msg = recvBuff.toString();
-        console.log("recv " + msg);
-        kcp.kcp_send(kcpsession, Buffer.from("RE-" + msg));
+    if (recvBuff.length > 0) {
+        for (let buff of recvBuff) {
+            let msg = buff.toString();
+            console.log("recv " + msg);
+            kcp.kcp_send(kcpsession, Buffer.from("RE-" + msg));
+        }
     }
     kcp.kcp_update(kcpsession, Date.now());
 }, 20);
