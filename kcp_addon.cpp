@@ -83,6 +83,18 @@ napi_value kcp_create(napi_env env, napi_callback_info cbinfo)
     return nkcp;
 }
 
+napi_value kcp_release(napi_env env, napi_callback_info cbinfo)
+{
+    size_t argc = 1;
+    napi_value argv[1];
+    napi_value this_arg;
+    napi_get_cb_info(env, cbinfo, &argc, argv, &this_arg, NULL);
+    PKcp pkcp;
+    napi_get_value_external(env, argv[0], (void **)&pkcp);
+    ikcp_release(pkcp->kcp);
+    return NULL;
+}
+
 napi_value kcp_update(napi_env env, napi_callback_info cbinfo)
 {
     size_t argc = 2;
@@ -154,6 +166,7 @@ napi_value init(napi_env env, napi_value exports)
 {
     struct _t {const char *method_name; napi_callback cb;} cbinfo[] = {
         {"kcp_create", kcp_create},
+        {"kcp_release", kcp_release},
         {"kcp_update", kcp_update},
         {"kcp_input", kcp_input},
         {"kcp_send", kcp_send},

@@ -4,7 +4,7 @@ const dgram = require("dgram");
 let sock = dgram.createSocket("udp4");
 
 let port = 8080;
-let address = "127.0.0.1";
+let address = "52.90.82.200";
 
 let kcpsession = kcp.kcp_create(123, (buff) => {
     sock.send(buff, port, address); 
